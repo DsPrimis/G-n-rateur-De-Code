@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Assistant IA - Générateur de Code</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: vertical;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Assistant IA - Générateur de Code</h1>
+  <textarea id="prompt" placeholder="Demande un code JS, Python, HTML..."></textarea><br>
+  <button onclick="ask()">Demander</button>
+  <pre id="response">Réponse ici...</pre>
+
+  <script>
+    async function ask() {
+      const prompt = document.getElementById('prompt').value.trim();
+      const responseBox = document.getElementById('response');
+
+      if (!prompt) {
+        responseBox.textContent = "❗ Merci de saisir une question.";
+        return;
+      }
+
+      responseBox.textContent = "⏳ Chargement en cours...";
+
+      try {
+        const res = await fetch('/api/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+
+        const data = await res.json();
+
+        if (data.response) {
+          responseBox.textContent = data.response;
+        } else {
+          responseBox.textContent = "⚠️ Aucune réponse reçue.";
+        }
+
+      } catch (error) {
+        console.error(error);
+        responseBox.textContent = "❌ Erreur lors de la requête.";
+      }
+    }
+  </script>
+
+</body>
+</html> 
